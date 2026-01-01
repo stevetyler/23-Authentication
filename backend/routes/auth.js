@@ -10,8 +10,10 @@ router.post('/signup', async (req, res, next) => {
   let errors = {};
 
   if (!isValidEmail(data.email)) {
+    console.log('1');
     errors.email = 'Invalid email.';
   } else {
+      console.log('2');
     try {
       const existingUser = await get(data.email);
       if (existingUser) {
@@ -21,10 +23,12 @@ router.post('/signup', async (req, res, next) => {
   }
 
   if (!isValidText(data.password, 6)) {
+    console.log('3');
     errors.password = 'Invalid password. Must be at least 6 characters long.';
   }
 
   if (Object.keys(errors).length > 0) {
+    console.log('4');
     return res.status(422).json({
       message: 'User signup failed due to validation errors.',
       errors,
@@ -34,12 +38,16 @@ router.post('/signup', async (req, res, next) => {
   try {
     const createdUser = await add(data);
     const authToken = createJSONToken(createdUser.email);
+    console.log('5');
     res
       .status(201)
       .json({ message: 'User created.', user: createdUser, token: authToken });
   } catch (error) {
     next(error);
   }
+
+  
+  console.log('errors', errors);
 });
 
 router.post('/login', async (req, res) => {
