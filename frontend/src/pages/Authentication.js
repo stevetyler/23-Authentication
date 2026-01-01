@@ -44,5 +44,8 @@ export async function action({ request }) {
   }
 
   // manage the token, e.g., store in localStorage or context
+  const resData = await response.json();
+  localStorage.setItem('token', resData.token);
+
   return redirect('/');
 }

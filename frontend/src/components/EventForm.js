@@ -3,10 +3,9 @@ import {
   useNavigate,
   useNavigation,
   useActionData,
-  json,
   redirect
 } from 'react-router-dom';
-
+import { getAuthToken } from '../util/auth';
 import classes from './EventForm.module.css';
 
 function EventForm({ method, event }) {
@@ -86,6 +85,7 @@ export default EventForm;
 export async function action({ request, params }) {
   const method = request.method;
   const data = await request.formData();
+  const token = getAuthToken();
 
   const eventData = {
     title: data.get('title'),
@@ -105,6 +105,7 @@ export async function action({ request, params }) {
     method: method,
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token,
     },
     body: JSON.stringify(eventData),
   });
@@ -114,7 +115,7 @@ export async function action({ request, params }) {
   }
 
   if (!response.ok) {
-    throw json({ message: 'Could not save event.' }, { status: 500 });
+    throw Response.json({ message: 'Could not save event.' }, { status: 500 });
   }
 
   return redirect('/events');
