@@ -2,6 +2,7 @@ import { Outlet, useSubmit, useLoaderData } from 'react-router-dom';
 
 import MainNavigation from '../components/MainNavigation';
 import { useEffect } from 'react';
+import { getTokenDuration } from '../util/auth';
 
 function RootLayout() {
   const token = useLoaderData();
@@ -9,15 +10,25 @@ function RootLayout() {
 
   useEffect(() => {
     if(!token) {
-      console.log('No token found in RootLayout');
       return;
     }
+    if (token === 'EXPIRED') {
+      submit(
+        null,
+        { method: 'post', action: '/logout' }
+      );
+      return;
+    }
+
+    const tokenDuration = getTokenDuration();
+    console.log('Token duration (ms):', tokenDuration);
+
     setTimeout(() => {
       submit(
         null,
         { method: 'post', action: '/logout' }
       );
-    }, 1 * 60 * 60 * 1000); 
+    }, tokenDuration); 
     console.log('Token refresh scheduled in RootLayout');
   }, [token]);
 
