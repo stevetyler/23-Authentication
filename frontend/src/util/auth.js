@@ -3,7 +3,6 @@ export function getAuthToken() {
   return token;
 }
 
-export function isUserAuthenticated() {
-  const token = getAuthToken();
-  return !!token;
+export function tokenLoader() {
+  return getAuthToken();
 }
